@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f4ef">
+  <meta name="description" content="Shop thoughtfully selected phones, laptops and everyday tech at Zimora Market.">
+  <title>Zimora Market — Tech, made closer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1f2823; --muted: #737b73; --paper: #f5f4ef; --white: #fff;
+      --green: #314d3d; --lime: #d7ed9f; --line: #e6e5de;
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "DM Sans", Arial, sans-serif;
+      --display: "Manrope", var(--sans);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; color: var(--ink); background: var(--paper); font-family: var(--sans); font-size: 14px; -webkit-font-smoothing: antialiased; }
+    button, input, select, textarea { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    a { color: inherit; text-decoration: none; }
+    button { color: inherit; }
+    .demo-notice { padding: 8px 14px; color: #eef4e9; background: var(--green); text-align: center; font-size: 10px; letter-spacing: .035em; }
+    .site-header { height: 76px; display: flex; align-items: center; justify-content: space-between; padding: 0 7%; border-bottom: 1px solid #2f3e3314; }
+    .brand { display: inline-flex; gap: 10px; align-items: center; color: var(--green); font: 800 19px var(--display); letter-spacing: -.08em; }
+    .brand-light { color: #777e74; font-weight: 500; letter-spacing: -.065em; }
+    .brand-mark { width: 23px; height: 23px; display: inline-flex; gap: 2px; align-items: end; transform: skew(-18deg); }
+    .brand-mark i { width: 6px; border-radius: 2px 2px 0 0; background: var(--green); }
+    .brand-mark i:nth-child(1) { height: 13px; }.brand-mark i:nth-child(2) { height: 19px; }.brand-mark i:nth-child(3) { height: 16px; }
+    .desktop-nav { display: flex; gap: 32px; color: #566158; font-size: 11px; }
+    .desktop-nav a:hover { color: #879d66; }
+    .header-actions { display: flex; gap: 19px; align-items: center; }
+    .icon-button { display: inline-flex; align-items: center; gap: 7px; border: 0; padding: 8px 0; background: transparent; font-size: 10px; cursor: pointer; }
+    .icon-button svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+    .bag-count { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; color: var(--green); background: var(--lime); font-size: 9px; font-weight: 700; }
+    .hero { display: grid; grid-template-columns: 46% 54%; min-height: 510px; padding: 58px 7% 54px; overflow: hidden; }
+    .hero-copy { position: relative; z-index: 1; align-self: center; }
+    .eyebrow { margin: 0 0 16px; color: #69766b; font-size: 9px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+    .eyebrow-dot { display: inline-block; width: 7px; height: 7px; margin-right: 7px; border-radius: 50%; background: #a6c675; }
+    h1, h2, h3, p { margin-top: 0; }
+    .hero h1 { margin: 0; font: 600 clamp(54px, 6vw, 79px)/.99 var(--display); letter-spacing: -.075em; }
+    h1 em, h2 em { color: #8da969; font-family: var(--serif); font-weight: 400; letter-spacing: -.06em; }
+    .hero-intro { max-width: 370px; margin: 21px 0 23px; color: #6f766e; font-size: 12px; line-height: 1.8; }
+    .button { min-height: 46px; display: inline-flex; justify-content: center; align-items: center; gap: 25px; border: 0; border-radius: 3px; padding: 0 20px; font-size: 10px; font-weight: 600; cursor: pointer; transition: background .2s, transform .2s; }
+    .button:hover { transform: translateY(-2px); }.button-dark { color: white; background: var(--green); }.button-dark:hover { background: #253e31; }
+    .hero-note { display: flex; align-items: center; gap: 12px; margin-top: 35px; color: #788076; font-size: 9px; line-height: 1.65; }
+    .hero-note strong { color: #3c463e; font-weight: 600; }
+    .avatar-stack { display: flex; }.avatar-stack i { display: grid; place-items: center; width: 23px; height: 23px; margin-right: -6px; border: 2px solid var(--paper); border-radius: 50%; background: #dce5ca; color: #49624b; font-size: 9px; font-style: normal; }.avatar-stack i:nth-child(2) { background: #ece0cc; color: #927448; }.avatar-stack i:nth-child(3) { background: #c9d6ca; color: #3f6149; }
+    .hero-art { position: relative; min-height: 390px; align-self: stretch; margin: -13px -6% -16px -2%; }
+    .hero-sun { position: absolute; width: 320px; height: 320px; top: 24px; right: 15%; border-radius: 50%; background: #e8e7d8; }
+    .hero-circle { position: absolute; width: 290px; height: 290px; top: 66px; right: 1%; border: 1px solid #d5dacb; border-radius: 50%; }
+    .hero-image { position: absolute; inset: 12px 8% 18px 10%; overflow: hidden; border-radius: 46% 46% 7px 7px; mix-blend-mode: multiply; }
+    .hero-image img { width: 100%; height: 100%; object-fit: cover; opacity: .9; }
+    .floating-note { position: absolute; right: 1%; bottom: 13%; display: flex; gap: 11px; align-items: center; padding: 12px 15px; background: #fffdf8; box-shadow: 0 12px 40px #3c483516; }
+    .floating-note > span { display: grid; place-items: center; width: 29px; height: 29px; border-radius: 50%; background: #e9f0d9; color: #819964; font-size: 15px; }
+    .floating-note strong, .floating-note small { display: block; }.floating-note strong { margin-bottom: 4px; font-size: 9px; }.floating-note small { color: #7f857b; font-size: 8px; }
+    .art-caption { position: absolute; right: 10%; top: 11%; color: #858b7f; font-size: 7px; letter-spacing: .2em; writing-mode: vertical-rl; }
+    .value-strip { display: grid; grid-template-columns: repeat(4, 1fr); padding: 22px 8%; border-block: 1px solid #e8e7e1; background: #f8f7f2; }
+    .value-strip > div { display: flex; justify-content: center; align-items: center; gap: 11px; border-right: 1px solid #e8e7e1; }.value-strip > div:last-child { border: 0; }
+    .value-icon { display: grid; place-items: center; width: 31px; height: 31px; border: 1px solid #e1e6d9; border-radius: 50%; color: #7c9665; font: 17px var(--serif); }
+    .value-strip strong, .value-strip small { display: block; }.value-strip strong { margin-bottom: 4px; font-size: 9px; font-weight: 600; }.value-strip small { color: #858a81; font-size: 8px; }
+    .shop-section { padding: 82px 7% 92px; scroll-margin-top: 20px; }
+    .section-heading { display: flex; justify-content: space-between; align-items: end; margin-bottom: 32px; }.section-heading .eyebrow { margin-bottom: 11px; }
+    .section-heading h2, .story-banner h2 { margin: 0; font: 600 clamp(30px, 4vw, 45px)/1.12 var(--display); letter-spacing: -.065em; }
+    .section-side-note { margin: 0 0 4px; color: #83887f; font: italic 12px/1.7 var(--serif); }
+    .shop-toolbar { min-height: 53px; display: flex; justify-content: space-between; align-items: center; gap: 18px; border-bottom: 1px solid var(--line); }
+    .category-list, .shop-tools { display: flex; align-items: center; gap: 7px; }
+    .category-chip { min-height: 31px; padding: 0 11px; border: 1px solid transparent; border-radius: 2px; color: #747b72; background: transparent; font-size: 9px; cursor: pointer; white-space: nowrap; }
+    .category-chip:hover, .category-chip.active { color: var(--green); border-color: #d9e0cf; background: #edf1e6; }
+    .search-box { display: flex; align-items: center; gap: 7px; }.search-box svg { width: 15px; fill: none; stroke: #8b9188; stroke-width: 1.5; stroke-linecap: round; }
+    .search-box input { width: 125px; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 9px; }.search-box input::placeholder { color: #9b9f97; }
+    .sort-box { display: flex; align-items: center; gap: 5px; color: #989c94; font-size: 9px; }.sort-box select { max-width: 135px; border: 0; outline: 0; color: #4a544b; background: transparent; font-size: 9px; cursor: pointer; }
+    .results-label { margin: 16px 0 12px; color: #8c9288; font-size: 9px; }
+    .product-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 29px 16px; }
+    .product-card { min-width: 0; cursor: pointer; }.product-image { position: relative; height: clamp(190px, 23vw, 275px); overflow: hidden; background: #eae9e2; }
+    .product-image img { width: 100%; height: 100%; object-fit: cover; transition: transform .45s; }.product-card:hover .product-image img { transform: scale(1.045); }
+    .product-badge { position: absolute; left: 9px; top: 9px; padding: 5px 7px; background: #f7f8f0; color: #536548; font-size: 7px; }
+    .quick-add { position: absolute; right: 9px; bottom: 9px; width: 34px; height: 34px; display: grid; place-items: center; border: 0; border-radius: 50%; color: white; background: var(--green); font-size: 19px; opacity: 0; transform: translateY(5px); transition: .2s; cursor: pointer; }
+    .product-card:hover .quick-add, .quick-add:focus { opacity: 1; transform: none; }
+    .product-info { padding: 12px 1px 0; }.product-category { margin: 0 0 6px; color: #92978d; font-size: 8px; letter-spacing: .1em; text-transform: uppercase; }
+    .product-info h3 { margin: 0 0 7px; font-size: 11px; font-weight: 600; }.product-rating { display: flex; align-items: center; gap: 5px; color: #a1834d; font-size: 8px; }.product-rating span { color: #9a9e95; font-size: 8px; }
+    .product-price { display: flex; gap: 8px; align-items: center; margin-top: 10px; font-size: 11px; font-weight: 600; }.product-price del { color: #a0a49b; font-size: 9px; font-weight: 400; }
+    .empty-state, .loading-state { padding: 52px 18px; color: #81877d; text-align: center; font-size: 11px; }.empty-state h3 { margin: 10px 0 7px; color: var(--ink); font: 600 20px var(--display); }.empty-state p { line-height: 1.6; }.empty-mark { color: #91a777; font-size: 32px; }
+    .text-button { border: 0; border-bottom: 1px solid #8da969; padding: 5px 0; background: transparent; color: var(--green); font-size: 10px; cursor: pointer; }
+    .story-banner { display: grid; grid-template-columns: 70px 1.15fr 1fr 48px; align-items: center; gap: 18px; margin: 0 7% 74px; padding: 38px 4%; background: #e9ece0; }
+    .story-mark { display: grid; place-items: center; width: 52px; height: 52px; border: 1px solid #d2d9c6; border-radius: 50%; color: var(--green); font: 700 27px var(--display); letter-spacing: -.1em; }
+    .story-banner .eyebrow { margin-bottom: 10px; }.story-banner h2 { font-size: 28px; }.story-banner > p { max-width: 330px; margin: 0; color: #737b70; font-size: 10px; line-height: 1.85; }
+    .round-arrow { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #cbd4bf; border-radius: 50%; color: var(--green); font-size: 17px; }.round-arrow:hover { color: white; background: var(--green); }
+    .site-footer { display: flex; justify-content: space-between; align-items: center; min-height: 91px; padding: 0 7%; border-top: 1px solid #e6e5de; }
+    .footer-brand { font-size: 16px; }.footer-brand .brand-mark { transform: scale(.8) skew(-18deg); transform-origin: left center; }
+    .site-footer > p { margin: 0; color: #8c9188; font: italic 11px var(--serif); }.footer-meta { display: flex; gap: 20px; color: #979b93; font-size: 8px; }
+    .hidden { display: none !important; }
+    .overlay { position: fixed; inset: 0; z-index: 20; background: #18251ecc; opacity: 0; transition: opacity .22s; }.overlay.visible { opacity: 1; }
+    .cart-drawer { position: fixed; z-index: 21; top: 0; right: 0; bottom: 0; width: min(430px, 100%); display: flex; flex-direction: column; padding: 27px 28px 22px; background: #faf9f5; transform: translateX(103%); transition: transform .25s ease; }
+    .cart-drawer.open { transform: translateX(0); }.drawer-header { display: flex; justify-content: space-between; align-items: start; padding-bottom: 19px; border-bottom: 1px solid var(--line); }.drawer-header .eyebrow { margin-bottom: 5px; font-size: 8px; }.drawer-header h2 { margin: 0; font: 600 25px var(--display); letter-spacing: -.05em; }.drawer-header h2 span { color: #8d9688; font-size: 13px; }
+    .close-button { width: 31px; height: 31px; display: grid; place-items: center; border: 1px solid #e3e4dc; border-radius: 50%; background: transparent; color: #4f594f; font-size: 22px; line-height: 1; cursor: pointer; }
+    .cart-items { flex: 1; overflow: auto; }.cart-line { display: grid; grid-template-columns: 72px 1fr auto; gap: 12px; padding: 15px 0; border-bottom: 1px solid var(--line); }.cart-line img { width: 72px; height: 75px; object-fit: cover; background: #e9e9e2; }
+    .cart-line h3 { margin: 3px 0 5px; font-size: 10px; font-weight: 600; }.line-category { margin: 0 0 8px; color: #92978d; font-size: 8px; }.line-price { align-self: start; margin-top: 4px; font-size: 10px; font-weight: 600; }
+    .quantity-control { display: inline-flex; align-items: center; border: 1px solid #e1e2da; }.quantity-control button { width: 25px; height: 24px; border: 0; background: transparent; color: #697267; cursor: pointer; }.quantity-control span { min-width: 20px; text-align: center; font-size: 9px; }
+    .remove-item { margin-left: 7px; border: 0; background: transparent; color: #969b92; font-size: 8px; text-decoration: underline; cursor: pointer; }
+    .cart-summary { padding-top: 16px; border-top: 1px solid var(--line); }.summary-row, .checkout-total { display: flex; justify-content: space-between; align-items: center; font-size: 11px; }.summary-row strong { font-size: 14px; }.cart-summary > p { margin: 7px 0 15px; color: #8d9289; font-size: 9px; }.checkout-button { width: 100%; justify-content: space-between; }.secure-note { margin-top: 12px; color: #9a9e96; text-align: center; font-size: 8px; }
+    .cart-empty { margin: auto; text-align: center; }.cart-empty > span { color: #9eb27e; font-size: 33px; }.cart-empty h3 { margin: 11px 0 7px; font: 600 17px var(--display); }.cart-empty p { max-width: 230px; color: #8d9289; font-size: 10px; line-height: 1.7; }.cart-empty .button { margin-top: 8px; }
+    .modal { position: fixed; z-index: 22; top: 50%; left: 50%; width: min(510px, calc(100% - 30px)); max-height: min(90vh, 830px); overflow: auto; padding: 36px 38px; background: #faf9f5; box-shadow: 0 24px 90px #14251e32; transform: translate(-50%, -48%); opacity: 0; transition: .2s; }
+    .modal.visible { transform: translate(-50%, -50%); opacity: 1; }.modal-close { position: absolute; top: 16px; right: 16px; }.modal-kicker { margin-bottom: 12px; color: #79886c; font-size: 8px; font-weight: 600; letter-spacing: .15em; }
+    .modal h2 { margin: 0 0 9px; font: 600 29px/1.1 var(--display); letter-spacing: -.065em; }.modal-description { margin: 0 0 18px; color: #81877d; font-size: 10px; line-height: 1.7; }
+    .form-field { display: block; margin: 0 0 12px; color: #4e584e; font-size: 9px; font-weight: 600; }.form-field input, .form-field textarea { display: block; width: 100%; margin-top: 6px; border: 1px solid #e3e4dc; border-radius: 2px; outline: 0; padding: 11px 10px; background: #fffefa; color: var(--ink); font-size: 10px; font-weight: 400; resize: vertical; }.form-field input:focus, .form-field textarea:focus { border-color: #9bb07e; box-shadow: 0 0 0 2px #cbd8b63b; }.form-field input::placeholder, .form-field textarea::placeholder { color: #abb0a8; }
+    .payment-options { margin: 14px 0; padding: 0; border: 0; }.payment-options legend { margin-bottom: 8px; color: #4e584e; font-size: 9px; font-weight: 600; }.payment-option { display: flex; align-items: center; gap: 10px; margin: 6px 0; padding: 10px; border: 1px solid #e3e4dc; background: #fffefa; cursor: pointer; }.payment-option:has(input:checked) { border-color: #9bb07e; background: #f7f9f1; }.payment-option input { position: absolute; opacity: 0; }.payment-option > span:nth-of-type(2) { flex: 1; }.payment-symbol { color: #74875c; font-size: 15px; }.mobile-symbol { font-size: 21px; }.payment-option strong, .payment-option small { display: block; }.payment-option strong { font-size: 9px; }.payment-option small { margin-top: 3px; color: #92978d; font-size: 8px; }.payment-option > i { width: 12px; height: 12px; border: 1px solid #bcc4b3; border-radius: 50%; }.payment-option:has(input:checked) > i { border: 4px solid var(--green); }
+    .split-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }.test-hint { margin: 2px 0 12px; padding: 9px; background: #f0f2e9; color: #737c6c; font-size: 8px; line-height: 1.6; }.test-hint strong { color: #4e6344; }
+    .checkout-total { margin: 13px 0 8px; padding-top: 12px; border-top: 1px solid var(--line); }.checkout-total strong { font-size: 17px; }.form-error { min-height: 0; margin: 0 0 7px; color: #a4483e; font-size: 9px; line-height: 1.5; }
+    .full-button { width: 100%; justify-content: space-between; margin-top: 5px; }.processing-message { display: flex; align-items: center; gap: 8px; margin: 9px 0; color: #66745b; font-size: 9px; }.spinner { width: 13px; height: 13px; border: 2px solid #dbe3d1; border-top-color: var(--green); border-radius: 50%; animation: spin .7s linear infinite; }@keyframes spin { to { transform: rotate(360deg); } }
+    .order-result { padding: 14px; background: #edf2e6; color: #3c5940; font-size: 10px; line-height: 1.7; }.order-result.failure { background: #f7ece8; color: #9b4d40; }.order-result strong { display: block; margin-bottom: 5px; font-size: 13px; }
+    .product-modal-content { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: center; }.product-modal-content img { width: 100%; max-height: 330px; object-fit: cover; background: #e8e8e0; }.product-modal-content h2 { font-size: 24px; }.product-description { color: #7f867d; font-size: 10px; line-height: 1.8; }.product-modal-content .product-price { margin: 12px 0; font-size: 16px; }.product-modal-content .button { margin-top: 6px; }
+    .order-card { padding: 13px 0; border-bottom: 1px solid var(--line); }.order-card:last-child { border-bottom: 0; }.order-card h3 { margin: 0 0 5px; font-size: 11px; }.order-card p { margin: 4px 0; color: #777f75; font-size: 9px; line-height: 1.6; }.status-tag { display: inline-block; padding: 4px 6px; background: #edf2e6; color: #3c5940; font-size: 8px; text-transform: uppercase; letter-spacing: .06em; }.status-tag.declined { background: #f7ece8; color: #9b4d40; }
+    .toast { position: fixed; z-index: 30; right: 20px; bottom: 20px; max-width: calc(100% - 40px); padding: 12px 16px; background: var(--green); color: white; box-shadow: 0 8px 28px #15251c27; font-size: 10px; opacity: 0; transform: translateY(10px); pointer-events: none; transition: .2s; }.toast.show { opacity: 1; transform: none; }
+    @media (max-width: 900px) {
+      .site-header { padding: 0 5%; }.desktop-nav { gap: 21px; }.hero { padding-inline: 5%; grid-template-columns: 48% 52%; }.hero-art { margin-right: -9%; }.value-strip { padding-inline: 4%; }.value-strip > div { gap: 8px; }.value-strip strong { font-size: 8px; }.shop-section { padding-inline: 5%; }.product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }.story-banner { margin-inline: 5%; grid-template-columns: 58px 1fr 1fr 42px; gap: 12px; }.story-banner h2 { font-size: 25px; }
+    }
+    @media (max-width: 650px) {
+      .demo-notice { font-size: 8px; }.site-header { height: 64px; padding: 0 5%; }.brand { font-size: 16px; }.desktop-nav { display: none; }.header-actions { gap: 14px; }.icon-button { font-size: 0; gap: 0; }.bag-count { font-size: 9px; margin-left: 4px; }
+      .hero { display: flex; flex-direction: column; min-height: unset; padding: 42px 6% 30px; }.hero-copy { padding: 0; }.hero h1 { font-size: clamp(53px, 14vw, 72px); }.hero-intro { margin: 16px 0 18px; font-size: 11px; }.hero-note { margin-top: 22px; }.hero-art { order: -1; width: 100%; min-height: 245px; margin: -24px 0 18px; }.hero-sun { top: 6px; right: 18%; width: 225px; height: 225px; }.hero-circle { top: 30px; right: 3%; width: 220px; height: 220px; }.hero-image { inset: 0 10% 3px 11%; }.floating-note { right: 0; bottom: 0; padding: 9px 11px; }.floating-note > span { width: 25px; height: 25px; }.floating-note strong { font-size: 8px; }.floating-note small { font-size: 7px; }.art-caption { top: 12%; right: 3%; font-size: 6px; }
+      .value-strip { grid-template-columns: 1fr 1fr; gap: 15px 4px; padding: 18px 6%; }.value-strip > div { justify-content: flex-start; border: 0; }.value-icon { width: 27px; height: 27px; flex: 0 0 27px; font-size: 14px; }.value-strip strong { font-size: 8px; }.value-strip small { font-size: 7px; }
+      .shop-section { padding: 55px 5% 62px; }.section-heading { margin-bottom: 21px; }.section-heading .eyebrow { font-size: 8px; }.section-heading h2 { font-size: 30px; }.section-side-note { display: none; }
+      .shop-toolbar { align-items: stretch; flex-direction: column; gap: 12px; padding-bottom: 11px; }.category-list { width: 100%; max-width: 100%; overflow-x: auto; padding-bottom: 2px; }.category-chip { flex: 0 0 auto; padding-inline: 9px; font-size: 8px; }.shop-tools { justify-content: space-between; gap: 10px; }.search-box input { width: min(45vw, 180px); }.sort-box select { max-width: 130px; }
+      .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 21px 10px; }.product-image { height: clamp(155px, 47vw, 235px); }.product-badge { left: 7px; top: 7px; padding: 5px; font-size: 7px; }.quick-add { right: 7px; bottom: 7px; width: 30px; height: 30px; opacity: 1; transform: none; }.product-info { padding-top: 9px; }.product-info h3 { font-size: 10px; }
+      .story-banner { grid-template-columns: 42px 1fr 39px; gap: 10px; margin: 0 5% 52px; padding: 22px 5%; }.story-mark { width: 38px; height: 38px; font-size: 21px; }.story-banner h2 { font-size: 21px; }.story-banner > p { grid-column: 2 / 4; grid-row: 2; font-size: 9px; }.round-arrow { width: 36px; height: 36px; }.site-footer { flex-wrap: wrap; gap: 10px; padding: 19px 5%; }.site-footer > p { width: 100%; order: 2; }.footer-meta { width: 100%; justify-content: space-between; order: 3; font-size: 7px; }
+      .cart-drawer { padding: 21px 18px 18px; }.modal { padding: 32px 22px 23px; }.product-modal-content { grid-template-columns: 1fr; gap: 14px; }.product-modal-content img { max-height: 200px; }.product-modal-content h2 { font-size: 22px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <div class="demo-notice">Single-file browser demo · no server or secure accounts · simulated payments only · bag and order history stay in this browser</div>
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="Zimora Market home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>zimora<span class="brand-light"> market</span></span></a>
+    <nav class="desktop-nav" aria-label="Main navigation">
+      <a href="#shop" data-category="All">Shop all</a><a href="#shop" data-category="Phones">Phones</a>
+      <a href="#shop" data-category="Laptops">Laptops</a><a href="#shop" data-category="Audio">Audio</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-button" id="orders-button" aria-label="View local demo orders">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Orders</span>
+      </button>
+      <button class="icon-button" id="cart-button" aria-label="Open shopping bag">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l1 12H4L5 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg><span>Bag</span><b class="bag-count" id="cart-count">0</b>
+      </button>
+    </div>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-dot"></span>Your local tech destination</p>
+        <h1>Good tech.<br><em>Good things.</em></h1>
+        <p class="hero-intro">The devices you love, chosen with care and closer to home. Find your next everyday essential.</p>
+        <a class="button button-dark" href="#shop">Explore the collection <span aria-hidden="true">↗</span></a>
+        <div class="hero-note"><span class="avatar-stack" aria-hidden="true"><i>✓</i><i>★</i><i>+</i></span><span>Good tech, good people.<br><strong>Made for everyday life.</strong></span></div>
+      </div>
+      <div class="hero-art" role="img" aria-label="A curated collection of modern electronic devices">
+        <div class="hero-sun"></div><div class="hero-circle"></div>
+        <div class="hero-image"><img src="https://images.unsplash.com/photo-1512499617640-c74ae3a79d37?auto=format&fit=crop&w=1400&q=85" alt="Phone and accessories arranged on a desk"></div>
+        <div class="floating-note"><span>✦</span><div><strong>Curated for you</strong><small>Everyday favourites, thoughtfully picked</small></div></div>
+        <span class="art-caption">THE GOOD STUFF, CLOSER.</span>
+      </div>
+    </section>
+    <section class="value-strip" aria-label="Store benefits">
+      <div><span class="value-icon">↗</span><span><strong>Local & reliable</strong><small>Here when you need us</small></span></div>
+      <div><span class="value-icon">◇</span><span><strong>Quality, assured</strong><small>Only the good stuff</small></span></div>
+      <div><span class="value-icon">♡</span><span><strong>People-first support</strong><small>Real help, from real people</small></span></div>
+      <div><span class="value-icon">⌁</span><span><strong>Flexible checkout</strong><small>Card or EcoCash simulation</small></span></div>
+    </section>
+    <section class="shop-section" id="shop">
+      <div class="section-heading">
+        <div><p class="eyebrow">A little something for every day</p><h2>Find your next <em>favourite.</em></h2></div>
+        <p class="section-side-note">Good design. Useful details.<br>Tech that fits your life.</p>
+      </div>
+      <div class="shop-toolbar">
+        <div class="category-list" role="group" aria-label="Filter by category">
+          <button class="category-chip active" data-category="All">Everything <span id="all-count"></span></button>
+          <button class="category-chip" data-category="Phones">Phones</button>
+          <button class="category-chip" data-category="Laptops">Laptops</button>
+          <button class="category-chip" data-category="Audio">Audio</button>
+          <button class="category-chip" data-category="Accessories">Accessories</button>
+        </div>
+        <div class="shop-tools">
+          <label class="search-box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4 4"/></svg><input id="search-input" type="search" placeholder="Find your thing..." aria-label="Search products"></label>
+          <label class="sort-box"><span>Sort:</span><select id="sort-select" aria-label="Sort products"><option value="featured">Featured</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option><option value="rating">Top rated</option></select></label>
+        </div>
+      </div>
+      <p class="results-label" id="results-label" aria-live="polite"></p>
+      <div class="product-grid" id="product-grid" aria-live="polite"></div>
+      <div class="empty-state hidden" id="empty-state"><span class="empty-mark">⌕</span><h3>No matches just yet</h3><p>Try a different search or category.</p><button class="text-button" id="clear-filters">Clear filters</button></div>
+    </section>
+    <section class="story-banner">
+      <div class="story-mark">z.</div><div><p class="eyebrow">A little more human</p><h2>Tech should make<br>life feel <em>a little easier.</em></h2></div>
+      <p>We're making it simpler to find technology you can count on—with friendly local service and choices that make sense for real life.</p>
+      <a href="#shop" class="round-arrow" aria-label="Shop the collection">↗</a>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <a class="brand footer-brand" href="#"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>zimora<span class="brand-light"> market</span></span></a>
+    <p>Good tech, good things. Proudly serving Zimbabwe.</p>
+    <div class="footer-meta"><span>Prices shown in USD</span><span>© 2026 Zimora Market</span></div>
+  </footer>
+
+  <div class="overlay hidden" id="overlay"></div>
+  <aside class="cart-drawer" id="cart-drawer" aria-label="Shopping bag" aria-hidden="true">
+    <div class="drawer-header"><div><p class="eyebrow">Your good finds</p><h2>Your bag <span id="drawer-count"></span></h2></div><button class="close-button" data-close aria-label="Close shopping bag">×</button></div>
+    <div class="cart-items" id="cart-items"></div>
+    <div class="cart-empty hidden" id="cart-empty"><span aria-hidden="true">♡</span><h3>Your bag is taking a breather</h3><p>Add something you love and it will appear here.</p><button class="button button-dark" data-close>Keep browsing</button></div>
+    <div class="cart-summary" id="cart-summary"><div class="summary-row"><span>Subtotal</span><strong id="cart-subtotal">$0</strong></div><p>Shipping calculated at checkout.</p><button class="button button-dark checkout-button" id="checkout-button">Continue to checkout <span>→</span></button><div class="secure-note">Local demo only · no payment is processed</div></div>
+  </aside>
+  <section class="modal hidden" id="product-modal" role="dialog" aria-modal="true" aria-label="Product details"></section>
+  <section class="modal hidden" id="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
+    <button class="close-button modal-close" data-close aria-label="Close checkout">×</button>
+    <div class="modal-kicker">DEMO CHECKOUT · NO REAL CHARGE</div><h2 id="checkout-title">Let's make it <em>yours.</em></h2>
+    <p class="modal-description">This single-file demo saves order history only in this browser. Do not enter real card or wallet details.</p>
+    <form id="checkout-form">
+      <label class="form-field">Delivery address<textarea name="deliveryAddress" rows="2" minlength="8" maxlength="300" placeholder="Street, suburb, city" required></textarea></label>
+      <fieldset class="payment-options"><legend>Choose payment</legend>
+        <label class="payment-option"><input type="radio" name="paymentMethod" value="card" checked><span class="payment-symbol">▰</span><span><strong>Bank card</strong><small>Simulation only</small></span><i></i></label>
+        <label class="payment-option"><input type="radio" name="paymentMethod" value="ecocash"><span class="payment-symbol mobile-symbol">⌁</span><span><strong>EcoCash</strong><small>Mobile money simulation</small></span><i></i></label>
+      </fieldset>
+      <div id="card-fields">
+        <label class="form-field">Test card number<input name="cardNumber" inputmode="numeric" autocomplete="off" placeholder="4242 4242 4242 4242" pattern="[0-9 ]{13,23}" required></label>
+        <div class="split-fields"><label class="form-field">Expiry<input name="expiry" autocomplete="off" placeholder="MM/YY" pattern="(0[1-9]|1[0-2])/[0-9]{2}" required></label><label class="form-field">Security code<input name="cvv" inputmode="numeric" autocomplete="off" placeholder="123" pattern="[0-9]{3,4}" required></label></div>
+      </div>
+      <div id="ecocash-fields" class="hidden"><label class="form-field">Test EcoCash number<input name="ecocashPhone" type="tel" inputmode="tel" autocomplete="off" placeholder="077 123 4567" pattern="(\+263|0)7[0-9 ]{8,12}"></label></div>
+      <p class="test-hint">Use only fictional values. A card ending in <strong>0000</strong> or EcoCash number ending in <strong>00</strong> simulates a decline. Details are not saved.</p>
+      <div class="checkout-total"><span>Total today</span><strong id="checkout-total">$0</strong></div>
+      <p class="form-error" id="checkout-error" role="alert"></p>
+      <div class="processing-message hidden" id="processing-message"><span class="spinner"></span>Processing the simulation…</div>
+      <button class="button button-dark full-button" id="pay-button" type="submit">Place simulated order <span>→</span></button>
+    </form>
+    <div class="order-result hidden" id="order-result" role="status"></div>
+  </section>
+  <section class="modal hidden" id="orders-modal" role="dialog" aria-modal="true" aria-labelledby="orders-title">
+    <button class="close-button modal-close" data-close aria-label="Close order history">×</button>
+    <div class="modal-kicker">STORED IN THIS BROWSER ONLY</div><h2 id="orders-title">Your demo <em>orders.</em></h2>
+    <p class="modal-description">No account is created. This history is local to this browser and can be cleared with browser site data.</p>
+    <div id="order-history"></div>
+    <button class="text-button" id="clear-local-data">Clear local bag and order history</button>
+  </section>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    'use strict';
+    const products = [
+      { id: 'nova-x-pro-5g', name: 'Nova X Pro 5G', category: 'Phones', description: 'A vivid 6.7-inch AMOLED display, all-day battery and versatile triple-camera system in a refined, pocket-ready design.', price: 749, compareAt: 829, image: 'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?auto=format&fit=crop&w=900&q=85', badge: 'Bestseller', rating: 4.9, stock: 18 },
+      { id: 'pixelwave-9', name: 'Pixelwave 9', category: 'Phones', description: 'Capture everyday moments in crisp detail with intelligent photography, smooth performance and a bright edge-to-edge screen.', price: 629, compareAt: 699, image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=900&q=85', badge: 'New arrival', rating: 4.8, stock: 14 },
+      { id: 'orbit-lite-5g', name: 'Orbit Lite 5G', category: 'Phones', description: 'Reliable 5G speed, a generous display and dependable battery life, built for the everyday essentials.', price: 349, compareAt: 399, image: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=900&q=85', badge: '', rating: 4.6, stock: 22 },
+      { id: 'studiobook-air-14', name: 'StudioBook Air 14', category: 'Laptops', description: 'A lightweight 14-inch work companion with a sharp display, fast solid-state storage and a full day of productivity.', price: 1099, compareAt: 1199, image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=900&q=85', badge: 'Staff pick', rating: 4.9, stock: 9 },
+      { id: 'thinkpad-pro-15', name: 'ThinkPad Pro 15', category: 'Laptops', description: 'A powerful 15-inch laptop designed for demanding work, comfortable typing and smooth multitasking.', price: 1399, compareAt: 1499, image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=900&q=85', badge: '', rating: 4.8, stock: 7 },
+      { id: 'everyday-chromebook-13', name: 'Everyday Chromebook 13', category: 'Laptops', description: 'A simple, fast-starting notebook for browsing, study and video calls, with a durable compact build.', price: 459, compareAt: 499, image: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=900&q=85', badge: 'Great value', rating: 4.5, stock: 16 },
+      { id: 'pulse-anc-headphones', name: 'Pulse ANC Headphones', category: 'Audio', description: 'Settle into your playlist with rich, balanced sound, comfortable over-ear cushions and adaptive noise reduction.', price: 189, compareAt: 229, image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=85', badge: 'Bestseller', rating: 4.8, stock: 25 },
+      { id: 'echopods-wireless', name: 'EchoPods Wireless', category: 'Audio', description: 'Pocket-friendly wireless earbuds with a clear call microphone, tactile controls and a compact charging case.', price: 89, compareAt: 109, image: 'https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?auto=format&fit=crop&w=900&q=85', badge: '', rating: 4.6, stock: 31 },
+      { id: 'soundbar-mini', name: 'Soundbar Mini', category: 'Audio', description: 'Give films and music a fuller sound with this clean, compact speaker that fits neatly into smaller spaces.', price: 149, compareAt: 179, image: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=900&q=85', badge: 'New arrival', rating: 4.5, stock: 12 },
+      { id: 'magsafe-duo-charger', name: 'MagSafe Duo Charger', category: 'Accessories', description: 'A tidy, travel-ready wireless charging stand for compatible phones and earbuds. USB-C power adapter sold separately.', price: 59, compareAt: 69, image: 'https://images.unsplash.com/photo-1615526675159-e248c3021d3f?auto=format&fit=crop&w=900&q=85', badge: '', rating: 4.4, stock: 40 },
+      { id: 'powerbank-20k', name: 'Powerbank 20K', category: 'Accessories', description: 'Keep your devices going on the move with a high-capacity power bank, fast USB-C output and clear charge indicators.', price: 49, compareAt: 59, image: 'https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?auto=format&fit=crop&w=900&q=85', badge: 'Great value', rating: 4.7, stock: 36 },
+      { id: 'flexfit-smartwatch', name: 'FlexFit Smartwatch', category: 'Accessories', description: 'Track daily activity and receive useful notifications on a bright, easy-to-read display with a comfortable sport band.', price: 129, compareAt: 159, image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=85', badge: '', rating: 4.6, stock: 19 }
+    ];
+    const storeKey = 'zimora-market-single-file-v1';
+    const $ = selector => document.querySelector(selector);
+    const grid = $('#product-grid');
+    const overlay = $('#overlay');
+    const drawer = $('#cart-drawer');
+    const money = amount => `$${Number(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+    let category = 'All';
+    let query = '';
+    let sort = 'featured';
+    let toastTimer;
+    let storageBlocked = false;
+    let state = { cart: [], orders: [] };
+
+    try {
+      const saved = JSON.parse(localStorage.getItem(storeKey) || '{}');
+      state.cart = Array.isArray(saved.cart) ? saved.cart.filter(line => products.some(item => item.id === line.id) && Number.isInteger(line.quantity) && line.quantity > 0) : [];
+      state.orders = Array.isArray(saved.orders) ? saved.orders : [];
+    } catch (error) {
+      storageBlocked = true;
+    }
+
+    function persist() {
+      try {
+        localStorage.setItem(storeKey, JSON.stringify(state));
+      } catch (error) {
+        storageBlocked = true;
+        showToast('Browser storage is unavailable; your demo data may not persist.');
+      }
+    }
+
+    function showToast(message) {
+      const toast = $('#toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+    }
+
+    function renderProducts() {
+      const needle = query.toLowerCase();
+      const list = products.filter(product =>
+        (category === 'All' || product.category === category) &&
+        (!needle || `${product.name} ${product.category} ${product.description}`.toLowerCase().includes(needle))
+      );
+      if (sort === 'price-low') list.sort((a, b) => a.price - b.price);
+      if (sort === 'price-high') list.sort((a, b) => b.price - a.price);
+      if (sort === 'rating') list.sort((a, b) => b.rating - a.rating);
+      grid.innerHTML = list.map(product => `<article class="product-card" data-product="${escapeHtml(product.id)}" tabindex="0" aria-label="View ${escapeHtml(product.name)}">
+        <div class="product-image"><img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" loading="lazy">${product.badge ? `<span class="product-badge">${escapeHtml(product.badge)}</span>` : ''}
+          <button class="quick-add" data-add="${escapeHtml(product.id)}" aria-label="Add ${escapeHtml(product.name)} to bag">+</button></div>
+        <div class="product-info"><p class="product-category">${escapeHtml(product.category)}</p><h3>${escapeHtml(product.name)}</h3>
+          <div class="product-rating">★ ${product.rating.toFixed(1)} <span>(${Math.round(product.rating * 23)} reviews)</span></div>
+          <div class="product-price">${money(product.price)} <del>${money(product.compareAt)}</del></div></div>
+      </article>`).join('');
+      $('#results-label').textContent = `${list.length} ${list.length === 1 ? 'find' : 'finds'} for your everyday`;
+      $('#all-count').textContent = category === 'All' && !query ? list.length : '';
+      $('#empty-state').classList.toggle('hidden', list.length !== 0);
+      grid.classList.toggle('hidden', list.length === 0);
+    }
+
+    function itemCount() {
+      return state.cart.reduce((sum, line) => sum + line.quantity, 0);
+    }
+    function cartTotal() {
+      return state.cart.reduce((sum, line) => {
+        const product = products.find(item => item.id === line.id);
+        return sum + (product ? product.price * line.quantity : 0);
+      }, 0);
+    }
+    function renderCart() {
+      $('#cart-count').textContent = itemCount();
+      $('#drawer-count').textContent = itemCount() ? `(${itemCount()})` : '';
+      $('#cart-subtotal').textContent = money(cartTotal());
+      $('#checkout-total').textContent = money(cartTotal());
+      const hasItems = state.cart.length > 0;
+      $('#cart-empty').classList.toggle('hidden', hasItems);
+      $('#cart-summary').classList.toggle('hidden', !hasItems);
+      $('#cart-items').classList.toggle('hidden', !hasItems);
+      $('#cart-items').innerHTML = state.cart.map(line => {
+        const product = products.find(item => item.id === line.id);
+        if (!product) return '';
+        return `<article class="cart-line"><img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}">
+          <div><h3>${escapeHtml(product.name)}</h3><p class="line-category">${escapeHtml(product.category)}</p>
+            <div><span class="quantity-control"><button data-quantity="${product.id}" data-change="-1" aria-label="Decrease quantity">−</button><span>${line.quantity}</span><button data-quantity="${product.id}" data-change="1" aria-label="Increase quantity">+</button></span>
+            <button class="remove-item" data-remove="${product.id}">Remove</button></div>
+          </div><span class="line-price">${money(product.price * line.quantity)}</span></article>`;
+      }).join('');
+    }
+
+    function addToCart(id) {
+      const product = products.find(item => item.id === id);
+      if (!product) return;
+      const line = state.cart.find(item => item.id === id);
+      if (line && line.quantity >= Math.min(product.stock, 20)) return showToast('Maximum available quantity is already in your bag.');
+      if (line) line.quantity += 1;
+      else state.cart.push({ id, quantity: 1 });
+      persist();
+      renderCart();
+      showToast(`${product.name} added to your bag.`);
+    }
+
+    function changeQuantity(id, delta) {
+      const line = state.cart.find(item => item.id === id);
+      const product = products.find(item => item.id === id);
+      if (!line || !product) return;
+      const next = line.quantity + delta;
+      if (next < 1) return removeItem(id);
+      if (next > Math.min(product.stock, 20)) return showToast('Maximum available quantity is already in your bag.');
+      line.quantity = next;
+      persist();
+      renderCart();
+    }
+
+    function removeItem(id) {
+      state.cart = state.cart.filter(item => item.id !== id);
+      persist();
+      renderCart();
+    }
+
+    function openLayer(layer) {
+      overlay.classList.remove('hidden');
+      layer.classList.remove('hidden');
+      requestAnimationFrame(() => { overlay.classList.add('visible'); layer.classList.add('visible'); });
+      document.body.style.overflow = 'hidden';
+      layer.querySelector('[data-close]')?.focus();
+    }
+
+    function closeLayers() {
+      const drawerWasOpen = drawer.classList.contains('open');
+      if (drawerWasOpen) $('#cart-button').focus();
+      overlay.classList.remove('visible');
+      drawer.classList.remove('open');
+      document.querySelectorAll('.modal.visible').forEach(modal => modal.classList.remove('visible'));
+      document.body.style.overflow = '';
+      setTimeout(() => {
+        overlay.classList.add('hidden');
+        drawer.classList.add('hidden');
+        drawer.setAttribute('aria-hidden', 'true');
+        document.querySelectorAll('.modal').forEach(modal => modal.classList.add('hidden'));
+      }, 220);
+    }
+
+    function openCart() {
+      renderCart();
+      drawer.classList.remove('hidden');
+      drawer.setAttribute('aria-hidden', 'false');
+      overlay.classList.remove('hidden');
+      requestAnimationFrame(() => { overlay.classList.add('visible'); drawer.classList.add('open'); });
+      document.body.style.overflow = 'hidden';
+      drawer.querySelector('[data-close]').focus();
+    }
+
+    function showProduct(id) {
+      const product = products.find(item => item.id === id);
+      if (!product) return;
+      $('#product-modal').innerHTML = `<button class="close-button modal-close" data-close aria-label="Close product details">×</button>
+        <div class="product-modal-content"><img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}">
+        <div><p class="product-category">${escapeHtml(product.category)}</p><h2>${escapeHtml(product.name)}</h2>
+          <div class="product-rating">★ ${product.rating.toFixed(1)} <span>Thoughtfully selected</span></div>
+          <div class="product-price">${money(product.price)} <del>${money(product.compareAt)}</del></div>
+          <p class="product-description">${escapeHtml(product.description)}</p><button class="button button-dark" data-add="${product.id}">Add to your bag <span>+</span></button></div></div>`;
+      openLayer($('#product-modal'));
+    }
+
+    function openCheckout() {
+      if (!state.cart.length) return;
+      closeLayers();
+      setTimeout(() => {
+        $('#checkout-form').reset();
+        $('#checkout-error').textContent = '';
+        $('#order-result').classList.add('hidden');
+        $('#checkout-form').classList.remove('hidden');
+        $('#pay-button').disabled = false;
+        $('#pay-button').classList.remove('hidden');
+        $('#processing-message').classList.add('hidden');
+        $('#checkout-total').textContent = money(cartTotal());
+        updatePaymentFields();
+        openLayer($('#checkout-modal'));
+      }, 230);
+    }
+
+    function updatePaymentFields() {
+      const method = $('#checkout-form').elements.paymentMethod.value;
+      $('#card-fields').classList.toggle('hidden', method !== 'card');
+      $('#ecocash-fields').classList.toggle('hidden', method !== 'ecocash');
+      $('#card-fields').querySelectorAll('input').forEach(input => { input.required = method === 'card'; });
+      $('#ecocash-fields').querySelector('input').required = method === 'ecocash';
+    }
+
+    function openOrders() {
+      const history = $('#order-history');
+      if (!state.orders.length) {
+        history.innerHTML = '<div class="empty-state"><h3>No demo orders yet</h3><p>Completed test orders will be saved in this browser.</p></div>';
+      } else {
+        history.innerHTML = state.orders.map(order => `<article class="order-card">
+          <h3>${escapeHtml(order.reference)} <span class="status-tag ${order.status === 'declined' ? 'declined' : ''}">${escapeHtml(order.status)}</span></h3>
+          <p>${escapeHtml(order.date)} · ${escapeHtml(order.method)} · ${money(order.total)}</p>
+          <p>${order.items.map(item => `${escapeHtml(item.name)} × ${item.quantity}`).join('<br>')}</p>
+        </article>`).join('');
+      }
+      openLayer($('#orders-modal'));
+    }
+
+    grid.addEventListener('click', event => {
+      const addButton = event.target.closest('[data-add]');
+      if (addButton) {
+        event.stopPropagation();
+        const modalAdd = !grid.contains(addButton);
+        addToCart(addButton.dataset.add);
+        if (modalAdd) closeLayers();
+        return;
+      }
+      const card = event.target.closest('[data-product]');
+      if (card) showProduct(card.dataset.product);
+    });
+    grid.addEventListener('keydown', event => {
+      if ((event.key === 'Enter' || event.key === ' ') && event.target.matches('.product-card')) {
+        event.preventDefault();
+        showProduct(event.target.dataset.product);
+      }
+    });
+
+    document.addEventListener('click', event => {
+      const categoryButton = event.target.closest('[data-category]');
+      if (categoryButton) {
+        category = categoryButton.dataset.category;
+        document.querySelectorAll('.category-chip').forEach(button => button.classList.toggle('active', button.dataset.category === category));
+        renderProducts();
+      }
+      const quantityButton = event.target.closest('[data-quantity]');
+      if (quantityButton) changeQuantity(quantityButton.dataset.quantity, Number(quantityButton.dataset.change));
+      const removeButton = event.target.closest('[data-remove]');
+      if (removeButton) removeItem(removeButton.dataset.remove);
+      if (event.target.closest('[data-close]')) closeLayers();
+      const addButton = event.target.closest('[data-add]');
+      if (addButton && !grid.contains(addButton)) {
+        addToCart(addButton.dataset.add);
+        closeLayers();
+      }
+    });
+
+    $('#cart-button').addEventListener('click', openCart);
+    $('#orders-button').addEventListener('click', openOrders);
+    $('#checkout-button').addEventListener('click', openCheckout);
+    $('#overlay').addEventListener('click', closeLayers);
+    $('#search-input').addEventListener('input', event => { query = event.target.value.trim(); renderProducts(); });
+    $('#sort-select').addEventListener('change', event => { sort = event.target.value; renderProducts(); });
+    $('#clear-filters').addEventListener('click', () => {
+      category = 'All'; query = ''; $('#search-input').value = '';
+      document.querySelectorAll('.category-chip').forEach(button => button.classList.toggle('active', button.dataset.category === 'All'));
+      renderProducts();
+    });
+    $('#checkout-form').elements.paymentMethod.forEach(input => input.addEventListener('change', updatePaymentFields));
+    $('#clear-local-data').addEventListener('click', () => {
+      if (!window.confirm('Clear this browser’s demo bag and order history?')) return;
+      state.cart = [];
+      state.orders = [];
+      persist();
+      renderCart();
+      openOrders();
+      showToast('Local demo data cleared.');
+    });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape') closeLayers(); });
+
+    $('#checkout-form').addEventListener('submit', async event => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      if (!form.reportValidity()) return;
+      const values = Object.fromEntries(new FormData(form));
+      const method = values.paymentMethod;
+      const paymentDetails = method === 'card'
+        ? { number: values.cardNumber, expiry: values.expiry, cvv: values.cvv }
+        : { phone: values.ecocashPhone };
+      $('#checkout-error').textContent = '';
+      $('#pay-button').disabled = true;
+      $('#processing-message').classList.remove('hidden');
+      await new Promise(resolve => setTimeout(resolve, 850));
+      const suffix = method === 'card'
+        ? String(paymentDetails.number).replace(/\D/g, '').slice(-4)
+        : String(paymentDetails.phone).replace(/\D/g, '').slice(-2);
+      const approved = method === 'card' ? suffix !== '0000' : suffix !== '00';
+      const order = {
+        reference: `ZM-${Math.random().toString(16).slice(2, 10).toUpperCase()}`,
+        date: new Date().toLocaleString(),
+        status: approved ? 'approved simulation' : 'declined',
+        method: method === 'card' ? 'Card simulation' : 'EcoCash simulation',
+        total: cartTotal(),
+        items: state.cart.map(line => {
+          const product = products.find(item => item.id === line.id);
+          return { name: product.name, quantity: line.quantity };
+        }),
+        address: String(values.deliveryAddress).trim()
+      };
+      state.orders.unshift(order);
+      if (approved) state.cart = [];
+      persist();
+      renderCart();
+      const result = $('#order-result');
+      result.innerHTML = `<strong>${approved ? 'Your demo order is confirmed. ✓' : 'Payment not approved'}</strong>
+        ${approved ? 'The payment was approved in this simulation. No money was charged.' : 'The payment was declined in this simulation. No money was charged; your bag is unchanged.'}
+        <br>Confirmation: <strong>${escapeHtml(order.reference)}</strong><br>Order total: ${money(order.total)}
+        ${approved ? '<br><br><button class="text-button" data-close>Continue exploring</button>' : ''}`;
+      result.classList.toggle('failure', !approved);
+      result.classList.remove('hidden');
+      $('#processing-message').classList.add('hidden');
+      for (const field of ['cardNumber', 'expiry', 'cvv', 'ecocashPhone']) {
+        if (form.elements[field]) form.elements[field].value = '';
+      }
+      if (approved) {
+        form.classList.add('hidden');
+        $('#pay-button').classList.add('hidden');
+      } else {
+        $('#pay-button').disabled = false;
+      }
+      showToast(approved ? 'Simulated order confirmed.' : 'Simulated payment declined.');
+    });
+
+    renderProducts();
+    renderCart();
+    if (storageBlocked) showToast('Browser storage could not be read; data may not persist.');
+  </script>
+</body>
+</html>
