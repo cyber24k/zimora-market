@@ -25,6 +25,7 @@
     a { color: inherit; text-decoration: none; }
     button { color: inherit; }
     .demo-notice { padding: 8px 14px; color: #eef4e9; background: var(--green); text-align: center; font-size: 10px; letter-spacing: .035em; }
+    .cloud-status { margin-left: 9px; color: var(--lime); font-weight: 600; }.cloud-status[data-state="offline"], .cloud-status[data-state="error"] { color: #ffd1c9; }
     .site-header { position: relative; height: 76px; display: flex; align-items: center; justify-content: space-between; padding: 0 7%; border-bottom: 1px solid #2f3e3314; }
     .brand { display: inline-flex; gap: 10px; align-items: center; color: var(--green); font: 800 19px var(--display); letter-spacing: -.08em; }
     .brand-light { color: #777e74; font-weight: 500; letter-spacing: -.065em; }
@@ -125,6 +126,8 @@
     .order-result { padding: 14px; background: #edf2e6; color: #3c5940; font-size: 10px; line-height: 1.7; }.order-result.failure { background: #f7ece8; color: #9b4d40; }.order-result strong { display: block; margin-bottom: 5px; font-size: 13px; }
     .product-modal-content { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: center; }.product-modal-content img { width: 100%; max-height: 330px; object-fit: cover; background: #e8e8e0; }.product-modal-content h2 { font-size: 24px; }.product-description { color: #7f867d; font-size: 10px; line-height: 1.8; }.product-modal-content .product-price { margin: 12px 0; font-size: 16px; }.product-modal-content .button { margin-top: 6px; }
     .order-card { padding: 13px 0; border-bottom: 1px solid var(--line); }.order-card:last-child { border-bottom: 0; }.order-card h3 { margin: 0 0 5px; font-size: 11px; }.order-card p { margin: 4px 0; color: #777f75; font-size: 9px; line-height: 1.6; }.status-tag { display: inline-block; padding: 4px 6px; background: #edf2e6; color: #3c5940; font-size: 8px; text-transform: uppercase; letter-spacing: .06em; }.status-tag.declined { background: #f7ece8; color: #9b4d40; }
+    .auth-switch { display: flex; gap: 18px; margin: 0 0 18px; }.auth-switch button { border: 0; border-bottom: 1px solid transparent; padding: 6px 0; background: transparent; color: #858a81; font-size: 10px; cursor: pointer; }.auth-switch button.active { border-color: #8da969; color: var(--green); }
+    .account-email { margin: 0 0 18px; color: #737b73; font-size: 11px; overflow-wrap: anywhere; }.account-email strong { display: block; margin-bottom: 5px; color: var(--ink); font-size: 14px; }
     .toast { position: fixed; z-index: 30; right: 20px; bottom: 20px; max-width: calc(100% - 40px); padding: 12px 16px; background: var(--green); color: white; box-shadow: 0 8px 28px #15251c27; font-size: 10px; opacity: 0; transform: translateY(10px); pointer-events: none; transition: .2s; }.toast.show { opacity: 1; transform: none; }
     @media (max-width: 900px) {
       .site-header { padding: 0 5%; }.desktop-nav { gap: 21px; }.hero { padding-inline: 5%; grid-template-columns: 48% 52%; }.hero-art { margin-right: -9%; }.value-strip { padding-inline: 4%; }.value-strip > div { gap: 8px; }.value-strip strong { font-size: 8px; }.shop-section { padding-inline: 5%; }.product-grid, .category-products { grid-template-columns: repeat(3, minmax(0, 1fr)); }.story-banner { margin-inline: 5%; grid-template-columns: 58px 1fr 1fr 42px; gap: 12px; }.story-banner h2 { font-size: 25px; }
@@ -145,7 +148,7 @@
   </style>
 </head>
 <body>
-  <div class="demo-notice">Firebase Realtime Database · private guest account · simulated payments only · payment details are never saved</div>
+  <div class="demo-notice">Firebase Realtime Database · private account · simulated payments only · payment details are never saved <span class="cloud-status" id="cloud-status" data-state="connecting" role="status" aria-live="polite">Connecting…</span></div>
   <header class="site-header">
     <a class="brand" href="#" aria-label="Zimora Market home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>zimora<span class="brand-light"> market</span></span></a>
     <nav class="desktop-nav" aria-label="Main navigation">
@@ -161,6 +164,9 @@
       <a href="#shop" data-category="Accessories">Accessories</a>
     </nav>
     <div class="header-actions">
+      <button class="icon-button" id="account-button" type="button" aria-label="Open account">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg><span id="account-label">Account</span>
+      </button>
       <button class="icon-button" id="orders-button" aria-label="View demo orders">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Orders</span>
       </button>
@@ -266,6 +272,30 @@
     <div id="order-history"></div>
     <button class="text-button" id="clear-local-data">Clear cloud bag and order history</button>
   </section>
+  <section class="modal hidden" id="account-modal" role="dialog" aria-modal="true" aria-labelledby="account-title">
+    <button class="close-button modal-close" data-close aria-label="Close account">×</button>
+    <div class="modal-kicker">YOUR PRIVATE ZIMORA ACCOUNT</div><h2 id="account-title">Your <em>account.</em></h2>
+    <div class="auth-switch" id="auth-switch">
+      <button class="active" type="button" data-auth-mode="login">Sign in</button>
+      <button type="button" data-auth-mode="register">Create account</button>
+    </div>
+    <p class="form-error" id="auth-error" role="alert"></p>
+    <form id="login-form">
+      <label class="form-field">Email<input name="email" type="email" autocomplete="email" maxlength="254" required></label>
+      <label class="form-field">Password<input name="password" type="password" autocomplete="current-password" minlength="6" required></label>
+      <button class="button button-dark full-button" type="submit">Sign in <span>→</span></button>
+    </form>
+    <form id="register-form" class="hidden">
+      <label class="form-field">Name<input name="displayName" type="text" autocomplete="name" maxlength="80" required></label>
+      <label class="form-field">Email<input name="email" type="email" autocomplete="email" maxlength="254" required></label>
+      <label class="form-field">Password<input name="password" type="password" autocomplete="new-password" minlength="6" required></label>
+      <button class="button button-dark full-button" type="submit">Create account <span>→</span></button>
+    </form>
+    <div class="hidden" id="account-details">
+      <p class="account-email"><strong id="account-name"></strong><span id="account-email"></span></p>
+      <button class="button button-dark full-button" id="logout-button" type="button">Sign out <span>→</span></button>
+    </div>
+  </section>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://www.gstatic.com/firebasejs/13.4.0/firebase-app-compat.js"></script>
@@ -306,8 +336,21 @@
     let query = '';
     let sort = 'featured';
     let toastTimer;
+    let firebaseAuth = null;
     let firebaseUser = null;
+    let firebaseProfile = null;
+    let userDataError = null;
     let databaseReady = false;
+    let cloudConnected = false;
+    let authMode = 'login';
+    const userDataWaiters = [];
+    const writeWaiters = [];
+    let writeRevision = 0;
+    let savedRevision = 0;
+    let failedRevision = 0;
+    let writeTimer = null;
+    let writeInProgress = false;
+    let databaseErrorNotified = false;
     let state = { cart: [], orders: [] };
 
     function copyState() {
@@ -317,22 +360,109 @@
       };
     }
 
-    async function persist(previousState) {
+    function setCloudStatus(status, message) {
+      const indicator = $('#cloud-status');
+      indicator.dataset.state = status;
+      indicator.textContent = message;
+    }
+
+    function isPermissionError(error) {
+      return /permission[_ ]denied/i.test(`${error.code || ''} ${error.message || ''}`);
+    }
+
+    function isTransientDatabaseError(error) {
+      return /network|disconnected|unavailable|timeout|temporar|fetch/i.test(`${error.code || ''} ${error.message || ''}`);
+    }
+
+    function settleWriteWaiters(revision, saved) {
+      for (let index = writeWaiters.length - 1; index >= 0; index -= 1) {
+        const waiter = writeWaiters[index];
+        if (waiter.revision > revision) continue;
+        writeWaiters.splice(index, 1);
+        waiter.resolve(saved);
+      }
+    }
+
+    function scheduleStateWrite(delay = 120) {
+      clearTimeout(writeTimer);
+      writeTimer = setTimeout(() => {
+        writeTimer = null;
+        flushStateWrites();
+      }, delay);
+    }
+
+    function persist() {
+      const revision = ++writeRevision;
+      setCloudStatus(cloudConnected ? 'saving' : 'offline', cloudConnected ? 'Saving changes…' : 'Offline · changes will sync when reconnected');
+      const result = new Promise(resolve => writeWaiters.push({ revision, resolve }));
+      scheduleStateWrite();
+      return result;
+    }
+
+    async function flushStateWrites() {
+      if (writeInProgress || !databaseReady || !firebaseUser || writeRevision <= Math.max(savedRevision, failedRevision)) return;
+      const userId = firebaseUser.uid;
+      const revision = writeRevision;
+      const snapshot = copyState();
+      writeInProgress = true;
+      let error = null;
       try {
-        if (!firebaseUser) throw new Error('No authenticated Firebase user is available.');
-        await firebase.database().ref(`users/${firebaseUser.uid}`).set({
-          cart: state.cart,
-          orders: state.orders
-        });
-        return true;
-      } catch (error) {
-        console.error('Firebase database save failed:', error);
-        if (previousState) {
-          state = previousState;
-          renderCart();
+        for (let attempt = 0; attempt < 3; attempt += 1) {
+          try {
+            await firebase.database().ref(`users/${userId}`).update(snapshot);
+            error = null;
+            break;
+          } catch (writeError) {
+            error = writeError;
+            if (isPermissionError(error) || !isTransientDatabaseError(error) || !cloudConnected || !navigator.onLine || attempt === 2) break;
+            await new Promise(resolve => setTimeout(resolve, 350 * (2 ** attempt)));
+          }
         }
-        showToast('Could not save to Firebase. Check your connection and try again.');
-        return false;
+      } finally {
+        writeInProgress = false;
+      }
+
+      if (error) {
+        if (!cloudConnected || !navigator.onLine) {
+          setCloudStatus('offline', 'Offline · changes will sync when reconnected');
+        } else {
+          failedRevision = revision;
+          settleWriteWaiters(revision, false);
+          console.error('Firebase database save failed:', error);
+          setCloudStatus('error', isPermissionError(error) ? 'Database access denied' : 'Could not sync changes');
+          if (!databaseErrorNotified) {
+            showToast(isPermissionError(error)
+              ? 'Firebase denied access to your data. Check your database rules.'
+              : 'Firebase could not save your changes. Please try again.');
+            databaseErrorNotified = true;
+          }
+        }
+      } else {
+        savedRevision = Math.max(savedRevision, revision);
+        failedRevision = 0;
+        databaseErrorNotified = false;
+        settleWriteWaiters(revision, true);
+        setCloudStatus(writeRevision > savedRevision ? 'saving' : 'connected', writeRevision > savedRevision ? 'Saving changes…' : 'Changes saved');
+      }
+
+      if (writeRevision > Math.max(savedRevision, failedRevision) && cloudConnected) scheduleStateWrite(0);
+    }
+
+    function updateCloudConnection(connected) {
+      const reconnected = connected && !cloudConnected;
+      cloudConnected = connected;
+      if (!connected) {
+        setCloudStatus(databaseReady ? 'offline' : 'connecting', databaseReady ? 'Offline · changes will sync when reconnected' : 'Connecting…');
+        return;
+      }
+      if (reconnected) failedRevision = 0;
+      if (!databaseReady) {
+        setCloudStatus('connecting', 'Loading your account…');
+      } else if (writeRevision > Math.max(savedRevision, failedRevision)) {
+        setCloudStatus('saving', 'Saving changes…');
+        scheduleStateWrite(0);
+      } else {
+        setCloudStatus('connected', 'Connected to Firebase');
       }
     }
 
@@ -342,6 +472,138 @@
       toast.classList.add('show');
       clearTimeout(toastTimer);
       toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+    }
+
+    function setAuthMode(mode) {
+      authMode = mode;
+      const registering = mode === 'register';
+      $('#login-form').classList.toggle('hidden', registering);
+      $('#register-form').classList.toggle('hidden', !registering);
+      document.querySelectorAll('[data-auth-mode]').forEach(button => button.classList.toggle('active', button.dataset.authMode === mode));
+      $('#auth-error').textContent = '';
+    }
+
+    function updateAccountUI() {
+      const authenticated = Boolean(firebaseUser && !firebaseUser.isAnonymous);
+      $('#account-label').textContent = authenticated ? 'My account' : 'Account';
+      $('#auth-switch').classList.toggle('hidden', authenticated);
+      $('#login-form').classList.toggle('hidden', authenticated || authMode !== 'login');
+      $('#register-form').classList.toggle('hidden', authenticated || authMode !== 'register');
+      $('#account-details').classList.toggle('hidden', !authenticated);
+      $('#account-name').textContent = authenticated ? (firebaseProfile && firebaseProfile.displayName || firebaseUser.displayName || 'Your account') : '';
+      $('#account-email').textContent = authenticated ? firebaseProfile && firebaseProfile.email || firebaseUser.email || '' : '';
+    }
+
+    function waitForUserData(uid) {
+      if (databaseReady && firebaseUser && firebaseUser.uid === uid) return Promise.resolve();
+      if (firebaseUser && firebaseUser.uid === uid && userDataError) return Promise.reject(userDataError);
+      return new Promise((resolve, reject) => userDataWaiters.push({ uid, resolve, reject }));
+    }
+
+    function settleUserDataWaiters(uid, error) {
+      for (let index = userDataWaiters.length - 1; index >= 0; index -= 1) {
+        const waiter = userDataWaiters[index];
+        if (waiter.uid !== uid) continue;
+        userDataWaiters.splice(index, 1);
+        if (error) waiter.reject(error);
+        else waiter.resolve();
+      }
+    }
+
+    function authErrorMessage(error) {
+      const messages = {
+        'auth/email-already-in-use': 'An account already uses this email. Sign in instead.',
+        'auth/invalid-email': 'Enter a valid email address.',
+        'auth/weak-password': 'Choose a password with at least 6 characters.',
+        'auth/user-not-found': 'No account was found for this email.',
+        'auth/wrong-password': 'The email or password is incorrect.',
+        'auth/invalid-credential': 'The email or password is incorrect.',
+        'auth/credential-already-in-use': 'An account already uses this email. Sign in instead.',
+        'auth/too-many-requests': 'Too many attempts. Please wait and try again.',
+        'auth/network-request-failed': 'Network error. Check your connection and try again.',
+        'auth/operation-not-allowed': 'Email and password sign-in is disabled in Firebase Authentication.'
+      };
+      return messages[error.code] || error.message || 'Authentication failed. Please try again.';
+    }
+
+    function openAccount() {
+      updateAccountUI();
+      $('#auth-error').textContent = '';
+      openLayer($('#account-modal'));
+    }
+
+    async function handleAuthStateChanged(user) {
+      databaseReady = false;
+      setCloudStatus(cloudConnected ? 'connecting' : 'offline', cloudConnected ? 'Loading your account…' : 'Connecting…');
+      if (!user) {
+        firebaseUser = null;
+        firebaseProfile = null;
+        userDataError = null;
+        setAuthMode('login');
+        state = { cart: [], orders: [] };
+        renderCart();
+        updateAccountUI();
+        try {
+          await firebaseAuth.signInAnonymously();
+        } catch (error) {
+          console.error('Firebase guest sign-in failed:', error);
+          setCloudStatus('error', 'Firebase sign-in failed');
+          showToast('Could not start a Firebase session. Check your connection and Firebase settings.');
+        }
+        return;
+      }
+
+      const previousUser = firebaseUser;
+      const guestState = previousUser && previousUser.isAnonymous && previousUser.uid !== user.uid ? copyState() : null;
+      firebaseUser = user;
+      userDataError = null;
+      try {
+        const userRef = firebase.database().ref(`users/${user.uid}`);
+        const snapshot = await userRef.once('value');
+        const saved = snapshot.val() || {};
+        state.cart = Array.isArray(saved.cart)
+          ? saved.cart.filter(line => {
+            const product = products.find(item => item.id === line.id);
+            return product && Number.isInteger(line.quantity) && line.quantity > 0 && line.quantity <= Math.min(product.stock, 20);
+          })
+          : [];
+        state.orders = Array.isArray(saved.orders) ? saved.orders : [];
+        if (guestState) {
+          guestState.cart.forEach(line => {
+            const product = products.find(item => item.id === line.id);
+            if (!product) return;
+            const existing = state.cart.find(savedLine => savedLine.id === line.id);
+            if (existing) existing.quantity = Math.min(product.stock, 20, existing.quantity + line.quantity);
+            else state.cart.push({ id: line.id, quantity: Math.min(product.stock, 20, line.quantity) });
+          });
+          state.orders = [...guestState.orders, ...state.orders];
+        }
+        if (!user.isAnonymous) {
+          const existingProfile = saved.profile || {};
+          firebaseProfile = {
+            email: user.email || existingProfile.email || '',
+            displayName: user.displayName || existingProfile.displayName || ''
+          };
+          await userRef.child('profile').update({
+            ...firebaseProfile,
+            createdAt: existingProfile.createdAt || firebase.database.ServerValue.TIMESTAMP,
+            lastLoginAt: firebase.database.ServerValue.TIMESTAMP
+          });
+        } else firebaseProfile = null;
+        databaseReady = true;
+        renderCart();
+        updateAccountUI();
+        updateCloudConnection(cloudConnected);
+        if (guestState) persist();
+        settleUserDataWaiters(user.uid);
+      } catch (error) {
+        console.error('Firebase account data load failed:', error);
+        userDataError = error;
+        settleUserDataWaiters(user.uid, error);
+        setCloudStatus('error', 'Could not load your data');
+        updateAccountUI();
+        showToast('Could not load your Firebase data. Check your connection and database rules.');
+      }
     }
 
     function hideSearchSuggestions() {
@@ -447,12 +709,11 @@
       if (product.stock < 1) return showToast('This product is currently out of stock.');
       const line = state.cart.find(item => item.id === id);
       if (line && line.quantity >= Math.min(product.stock, 20)) return showToast('Maximum available quantity is already in your bag.');
-      const previousState = copyState();
       if (line) line.quantity += 1;
       else state.cart.push({ id, quantity: 1 });
-      if (!(await persist(previousState))) return;
       renderCart();
       showToast(`${product.name} added to your bag.`);
+      await persist();
     }
 
     async function changeQuantity(id, delta) {
@@ -463,18 +724,16 @@
       const next = line.quantity + delta;
       if (next < 1) return removeItem(id);
       if (next > Math.min(product.stock, 20)) return showToast('Maximum available quantity is already in your bag.');
-      const previousState = copyState();
       line.quantity = next;
-      if (!(await persist(previousState))) return;
       renderCart();
+      await persist();
     }
 
     async function removeItem(id) {
       if (!databaseReady) return showToast('Connecting to the database. Please try again shortly.');
-      const previousState = copyState();
       state.cart = state.cart.filter(item => item.id !== id);
-      if (!(await persist(previousState))) return;
       renderCart();
+      await persist();
     }
 
     function openLayer(layer) {
@@ -616,7 +875,90 @@
       $('#mobile-menu-toggle').setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
     });
     $('#cart-button').addEventListener('click', openCart);
+    $('#account-button').addEventListener('click', openAccount);
     $('#orders-button').addEventListener('click', openOrders);
+    $('#auth-switch').addEventListener('click', event => {
+      const modeButton = event.target.closest('[data-auth-mode]');
+      if (modeButton) setAuthMode(modeButton.dataset.authMode);
+    });
+    $('#login-form').addEventListener('submit', async event => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      if (!form.reportValidity()) return;
+      if (!firebaseAuth) {
+        $('#auth-error').textContent = 'Firebase is still connecting. Please try again shortly.';
+        return;
+      }
+      const submit = form.querySelector('button[type="submit"]');
+      submit.disabled = true;
+      $('#auth-error').textContent = '';
+      try {
+        const email = form.elements.email.value.trim();
+        const result = await firebaseAuth.signInWithEmailAndPassword(email, form.elements.password.value);
+        await waitForUserData(result.user.uid);
+        closeLayers();
+        showToast('You are signed in.');
+      } catch (error) {
+        console.error('Firebase sign-in failed:', error);
+        $('#auth-error').textContent = authErrorMessage(error);
+      } finally {
+        submit.disabled = false;
+      }
+    });
+    $('#register-form').addEventListener('submit', async event => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      if (!form.reportValidity()) return;
+      if (!firebaseAuth) {
+        $('#auth-error').textContent = 'Firebase is still connecting. Please try again shortly.';
+        return;
+      }
+      const submit = form.querySelector('button[type="submit"]');
+      submit.disabled = true;
+      $('#auth-error').textContent = '';
+      try {
+        const displayName = form.elements.displayName.value.trim();
+        const email = form.elements.email.value.trim();
+        const password = form.elements.password.value;
+        const credential = firebase.auth.EmailAuthProvider.credential(email, password);
+        const result = firebaseUser && firebaseUser.isAnonymous
+          ? await firebaseUser.linkWithCredential(credential)
+          : await firebaseAuth.createUserWithEmailAndPassword(email, password);
+        await result.user.updateProfile({ displayName });
+        await firebase.database().ref(`users/${result.user.uid}/profile`).update({
+          email: result.user.email,
+          displayName,
+          createdAt: firebase.database.ServerValue.TIMESTAMP,
+          lastLoginAt: firebase.database.ServerValue.TIMESTAMP
+        });
+        firebaseUser = result.user;
+        firebaseProfile = { email: result.user.email || email, displayName };
+        updateAccountUI();
+        await waitForUserData(result.user.uid);
+        closeLayers();
+        showToast('Your account has been created.');
+      } catch (error) {
+        console.error('Firebase account creation failed:', error);
+        $('#auth-error').textContent = authErrorMessage(error);
+      } finally {
+        submit.disabled = false;
+      }
+    });
+    $('#logout-button').addEventListener('click', async () => {
+      if (!firebaseAuth) return;
+      const button = $('#logout-button');
+      button.disabled = true;
+      try {
+        await firebaseAuth.signOut();
+        closeLayers();
+        showToast('You have been signed out.');
+      } catch (error) {
+        console.error('Firebase sign-out failed:', error);
+        $('#auth-error').textContent = authErrorMessage(error);
+      } finally {
+        button.disabled = false;
+      }
+    });
     $('#checkout-button').addEventListener('click', openCheckout);
     $('#overlay').addEventListener('click', closeLayers);
     $('#search-input').addEventListener('input', event => { query = event.target.value.trim(); renderProducts(); });
@@ -642,8 +984,12 @@
       const previousState = copyState();
       state.cart = [];
       state.orders = [];
-      if (!(await persist(previousState))) return;
       renderCart();
+      if (!(await persist())) {
+        state = previousState;
+        renderCart();
+        return;
+      }
       openOrders();
       showToast('Cloud demo data cleared.');
     });
@@ -656,6 +1002,10 @@
           $('#search-input').focus();
         }
       }
+    });
+    window.addEventListener('offline', () => updateCloudConnection(false));
+    window.addEventListener('online', () => {
+      if (!cloudConnected) setCloudStatus('connecting', 'Network restored · reconnecting…');
     });
 
     $('#checkout-form').addEventListener('submit', async event => {
@@ -691,7 +1041,10 @@
       const previousState = copyState();
       state.orders.unshift(order);
       if (approved) state.cart = [];
-      if (!(await persist(previousState))) {
+      renderCart();
+      if (!(await persist())) {
+        state = previousState;
+        renderCart();
         $('#processing-message').classList.add('hidden');
         $('#checkout-error').textContent = 'Your order could not be saved. Please try again.';
         $('#pay-button').disabled = false;
@@ -722,38 +1075,31 @@
       try {
         if (!window.firebase) throw new Error('Firebase SDK could not be loaded.');
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        firebaseUser = await new Promise((resolve, reject) => {
-          let unsubscribe = () => {};
-          unsubscribe = auth.onAuthStateChanged(user => {
-            unsubscribe();
-            if (user) {
-              resolve(user);
-            } else {
-              auth.signInAnonymously().then(credential => resolve(credential.user), reject);
-            }
-          }, error => {
-            unsubscribe();
-            reject(error);
-          });
+        firebaseAuth = firebase.auth();
+        firebase.database().ref('.info/connected').on('value', snapshot => {
+          updateCloudConnection(snapshot.val() === true);
+        }, error => {
+          console.error('Firebase connection listener failed:', error);
+          setCloudStatus('error', 'Cannot monitor Firebase connection');
         });
-        const snapshot = await firebase.database().ref(`users/${firebaseUser.uid}`).once('value');
-        const saved = snapshot.val() || {};
-        state.cart = Array.isArray(saved.cart)
-          ? saved.cart.filter(line => {
-            const product = products.find(item => item.id === line.id);
-            return product && Number.isInteger(line.quantity) && line.quantity > 0 && line.quantity <= Math.min(product.stock, 20);
-          })
-          : [];
-        state.orders = Array.isArray(saved.orders) ? saved.orders : [];
-        databaseReady = true;
-        renderCart();
+        firebaseAuth.onAuthStateChanged(user => {
+          handleAuthStateChanged(user).catch(error => {
+            console.error('Firebase authentication state handling failed:', error);
+            showToast('Could not initialize your Firebase account.');
+          });
+        }, error => {
+          console.error('Firebase authentication listener failed:', error);
+          setCloudStatus('error', 'Firebase Authentication unavailable');
+          showToast('Could not connect to Firebase Authentication.');
+        });
       } catch (error) {
         console.error('Firebase database connection failed:', error);
+        setCloudStatus('error', 'Firebase unavailable');
         showToast('Could not connect to Firebase. Bag and checkout are unavailable.');
       }
     }
 
+    updateAccountUI();
     renderProducts();
     renderCart();
     initializeCloudData();
