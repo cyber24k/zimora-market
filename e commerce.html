@@ -145,7 +145,7 @@
   </style>
 </head>
 <body>
-  <div class="demo-notice">Single-file browser demo · no server or secure accounts · simulated payments only · bag and order history stay in this browser</div>
+  <div class="demo-notice">Firebase Realtime Database · private guest account · simulated payments only · payment details are never saved</div>
   <header class="site-header">
     <a class="brand" href="#" aria-label="Zimora Market home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>zimora<span class="brand-light"> market</span></span></a>
     <nav class="desktop-nav" aria-label="Main navigation">
@@ -161,7 +161,7 @@
       <a href="#shop" data-category="Accessories">Accessories</a>
     </nav>
     <div class="header-actions">
-      <button class="icon-button" id="orders-button" aria-label="View local demo orders">
+      <button class="icon-button" id="orders-button" aria-label="View demo orders">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Orders</span>
       </button>
       <button class="icon-button" id="cart-button" aria-label="Open shopping bag">
@@ -239,7 +239,7 @@
   <section class="modal hidden" id="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
     <button class="close-button modal-close" data-close aria-label="Close checkout">×</button>
     <div class="modal-kicker">DEMO CHECKOUT · NO REAL CHARGE</div><h2 id="checkout-title">Let's make it <em>yours.</em></h2>
-    <p class="modal-description">This single-file demo saves order history only in this browser. Do not enter real card or wallet details.</p>
+    <p class="modal-description">Your demo bag and orders are saved securely to your Firebase account. Do not enter real card or wallet details.</p>
     <form id="checkout-form">
       <label class="form-field">Delivery address<textarea name="deliveryAddress" rows="2" minlength="8" maxlength="300" placeholder="Street, suburb, city" required></textarea></label>
       <fieldset class="payment-options"><legend>Choose payment</legend>
@@ -261,15 +261,27 @@
   </section>
   <section class="modal hidden" id="orders-modal" role="dialog" aria-modal="true" aria-labelledby="orders-title">
     <button class="close-button modal-close" data-close aria-label="Close order history">×</button>
-    <div class="modal-kicker">STORED IN THIS BROWSER ONLY</div><h2 id="orders-title">Your demo <em>orders.</em></h2>
-    <p class="modal-description">No account is created. This history is local to this browser and can be cleared with browser site data.</p>
+    <div class="modal-kicker">SAVED TO YOUR ACCOUNT</div><h2 id="orders-title">Your demo <em>orders.</em></h2>
+    <p class="modal-description">Your order history is saved to your private Firebase account and can be cleared below.</p>
     <div id="order-history"></div>
-    <button class="text-button" id="clear-local-data">Clear local bag and order history</button>
+    <button class="text-button" id="clear-local-data">Clear cloud bag and order history</button>
   </section>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+  <script src="https://www.gstatic.com/firebasejs/13.4.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/13.4.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/13.4.0/firebase-database-compat.js"></script>
   <script>
     'use strict';
+    const firebaseConfig = {
+      apiKey: 'AIzaSyAQxxd9Ih7KhN-U51u3afpbfsEBAJosSwU',
+      authDomain: 'zimora-market.firebaseapp.com',
+      databaseURL: 'https://zimora-market-default-rtdb.firebaseio.com',
+      projectId: 'zimora-market',
+      storageBucket: 'zimora-market.firebasestorage.app',
+      messagingSenderId: '428542815556',
+      appId: '1:428542815556:web:4a92c68088754941323b11'
+    };
     const products = [
       { id: 'nova-x-pro-5g', name: 'Nova X Pro 5G', category: 'Phones', description: 'A vivid 6.7-inch AMOLED display, all-day battery and versatile triple-camera system in a refined, pocket-ready design.', price: 749, compareAt: 829, image: 'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?auto=format&fit=crop&w=900&q=85', badge: 'Bestseller', rating: 4.9, stock: 18 },
       { id: 'pixelwave-9', name: 'Pixelwave 9', category: 'Phones', description: 'Capture everyday moments in crisp detail with intelligent photography, smooth performance and a bright edge-to-edge screen.', price: 629, compareAt: 699, image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=900&q=85', badge: 'New arrival', rating: 4.8, stock: 14 },
@@ -284,7 +296,6 @@
       { id: 'powerbank-20k', name: 'Powerbank 20K', category: 'Accessories', description: 'Keep your devices going on the move with a high-capacity power bank, fast USB-C output and clear charge indicators.', price: 49, compareAt: 59, image: 'https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?auto=format&fit=crop&w=900&q=85', badge: 'Great value', rating: 4.7, stock: 36 },
       { id: 'flexfit-smartwatch', name: 'FlexFit Smartwatch', category: 'Accessories', description: 'Track daily activity and receive useful notifications on a bright, easy-to-read display with a comfortable sport band.', price: 129, compareAt: 159, image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=85', badge: '', rating: 4.6, stock: 19 }
     ];
-    const storeKey = 'zimora-market-single-file-v1';
     const $ = selector => document.querySelector(selector);
     const grid = $('#product-grid');
     const overlay = $('#overlay');
@@ -295,23 +306,33 @@
     let query = '';
     let sort = 'featured';
     let toastTimer;
-    let storageBlocked = false;
+    let firebaseUser = null;
+    let databaseReady = false;
     let state = { cart: [], orders: [] };
 
-    try {
-      const saved = JSON.parse(localStorage.getItem(storeKey) || '{}');
-      state.cart = Array.isArray(saved.cart) ? saved.cart.filter(line => products.some(item => item.id === line.id) && Number.isInteger(line.quantity) && line.quantity > 0) : [];
-      state.orders = Array.isArray(saved.orders) ? saved.orders : [];
-    } catch (error) {
-      storageBlocked = true;
+    function copyState() {
+      return {
+        cart: state.cart.map(line => ({ ...line })),
+        orders: [...state.orders]
+      };
     }
 
-    function persist() {
+    async function persist(previousState) {
       try {
-        localStorage.setItem(storeKey, JSON.stringify(state));
+        if (!firebaseUser) throw new Error('No authenticated Firebase user is available.');
+        await firebase.database().ref(`users/${firebaseUser.uid}`).set({
+          cart: state.cart,
+          orders: state.orders
+        });
+        return true;
       } catch (error) {
-        storageBlocked = true;
-        showToast('Browser storage is unavailable; your demo data may not persist.');
+        console.error('Firebase database save failed:', error);
+        if (previousState) {
+          state = previousState;
+          renderCart();
+        }
+        showToast('Could not save to Firebase. Check your connection and try again.');
+        return false;
       }
     }
 
@@ -419,34 +440,40 @@
       }).join('');
     }
 
-    function addToCart(id) {
+    async function addToCart(id) {
+      if (!databaseReady) return showToast('Connecting to the database. Please try again shortly.');
       const product = products.find(item => item.id === id);
       if (!product) return;
       if (product.stock < 1) return showToast('This product is currently out of stock.');
       const line = state.cart.find(item => item.id === id);
       if (line && line.quantity >= Math.min(product.stock, 20)) return showToast('Maximum available quantity is already in your bag.');
+      const previousState = copyState();
       if (line) line.quantity += 1;
       else state.cart.push({ id, quantity: 1 });
-      persist();
+      if (!(await persist(previousState))) return;
       renderCart();
       showToast(`${product.name} added to your bag.`);
     }
 
-    function changeQuantity(id, delta) {
+    async function changeQuantity(id, delta) {
+      if (!databaseReady) return showToast('Connecting to the database. Please try again shortly.');
       const line = state.cart.find(item => item.id === id);
       const product = products.find(item => item.id === id);
       if (!line || !product) return;
       const next = line.quantity + delta;
       if (next < 1) return removeItem(id);
       if (next > Math.min(product.stock, 20)) return showToast('Maximum available quantity is already in your bag.');
+      const previousState = copyState();
       line.quantity = next;
-      persist();
+      if (!(await persist(previousState))) return;
       renderCart();
     }
 
-    function removeItem(id) {
+    async function removeItem(id) {
+      if (!databaseReady) return showToast('Connecting to the database. Please try again shortly.');
+      const previousState = copyState();
       state.cart = state.cart.filter(item => item.id !== id);
-      persist();
+      if (!(await persist(previousState))) return;
       renderCart();
     }
 
@@ -496,6 +523,7 @@
     }
 
     function openCheckout() {
+      if (!databaseReady) return showToast('Connecting to the database. Please try again shortly.');
       if (!state.cart.length) return;
       closeLayers();
       setTimeout(() => {
@@ -521,9 +549,10 @@
     }
 
     function openOrders() {
+      if (!databaseReady) return showToast('Connecting to the database. Please try again shortly.');
       const history = $('#order-history');
       if (!state.orders.length) {
-        history.innerHTML = '<div class="empty-state"><h3>No demo orders yet</h3><p>Completed test orders will be saved in this browser.</p></div>';
+        history.innerHTML = '<div class="empty-state"><h3>No demo orders yet</h3><p>Completed test orders will be saved to your Firebase account.</p></div>';
       } else {
         history.innerHTML = state.orders.map(order => `<article class="order-card">
           <h3>${escapeHtml(order.reference)} <span class="status-tag ${order.status === 'declined' ? 'declined' : ''}">${escapeHtml(order.status)}</span></h3>
@@ -607,14 +636,16 @@
       renderProducts();
     });
     $('#checkout-form').elements.paymentMethod.forEach(input => input.addEventListener('change', updatePaymentFields));
-    $('#clear-local-data').addEventListener('click', () => {
-      if (!window.confirm('Clear this browser’s demo bag and order history?')) return;
+    $('#clear-local-data').addEventListener('click', async () => {
+      if (!databaseReady) return showToast('Connecting to the database. Please try again shortly.');
+      if (!window.confirm('Clear your demo bag and Firebase order history?')) return;
+      const previousState = copyState();
       state.cart = [];
       state.orders = [];
-      persist();
+      if (!(await persist(previousState))) return;
       renderCart();
       openOrders();
-      showToast('Local demo data cleared.');
+      showToast('Cloud demo data cleared.');
     });
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape') {
@@ -629,6 +660,7 @@
 
     $('#checkout-form').addEventListener('submit', async event => {
       event.preventDefault();
+      if (!databaseReady) return showToast('Connecting to the database. Please try again shortly.');
       const form = event.currentTarget;
       if (!form.reportValidity()) return;
       const values = Object.fromEntries(new FormData(form));
@@ -656,9 +688,15 @@
         }),
         address: String(values.deliveryAddress).trim()
       };
+      const previousState = copyState();
       state.orders.unshift(order);
       if (approved) state.cart = [];
-      persist();
+      if (!(await persist(previousState))) {
+        $('#processing-message').classList.add('hidden');
+        $('#checkout-error').textContent = 'Your order could not be saved. Please try again.';
+        $('#pay-button').disabled = false;
+        return;
+      }
       renderCart();
       const result = $('#order-result');
       result.innerHTML = `<strong>${approved ? 'Your demo order is confirmed. ✓' : 'Payment not approved'}</strong>
@@ -680,9 +718,45 @@
       showToast(approved ? 'Simulated order confirmed.' : 'Simulated payment declined.');
     });
 
+    async function initializeCloudData() {
+      try {
+        if (!window.firebase) throw new Error('Firebase SDK could not be loaded.');
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        firebaseUser = await new Promise((resolve, reject) => {
+          let unsubscribe = () => {};
+          unsubscribe = auth.onAuthStateChanged(user => {
+            unsubscribe();
+            if (user) {
+              resolve(user);
+            } else {
+              auth.signInAnonymously().then(credential => resolve(credential.user), reject);
+            }
+          }, error => {
+            unsubscribe();
+            reject(error);
+          });
+        });
+        const snapshot = await firebase.database().ref(`users/${firebaseUser.uid}`).once('value');
+        const saved = snapshot.val() || {};
+        state.cart = Array.isArray(saved.cart)
+          ? saved.cart.filter(line => {
+            const product = products.find(item => item.id === line.id);
+            return product && Number.isInteger(line.quantity) && line.quantity > 0 && line.quantity <= Math.min(product.stock, 20);
+          })
+          : [];
+        state.orders = Array.isArray(saved.orders) ? saved.orders : [];
+        databaseReady = true;
+        renderCart();
+      } catch (error) {
+        console.error('Firebase database connection failed:', error);
+        showToast('Could not connect to Firebase. Bag and checkout are unavailable.');
+      }
+    }
+
     renderProducts();
     renderCart();
-    if (storageBlocked) showToast('Browser storage could not be read; data may not persist.');
+    initializeCloudData();
   </script>
 </body>
 </html>
